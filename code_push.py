@@ -6,18 +6,18 @@ Author: Jonathan Luu
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoAlertPresentException
 import time
 import os
 import re
-import sys
 
+TIME_DELAY = 2
 algorithms_page_driver = webdriver.Chrome("./chromedriver")
-problem_page_driver = webdriver.Chrome("./chromedriver")
 
 '''
 TODO
-# Gather code
-# Create .cpp file for it
+
+#Automate Beautify Process
 
 # git add .
 # git commit -m "Pushed LeetCode into Repo"
@@ -72,23 +72,38 @@ def create_file(title, code):
     file.close()
 
 
-def scrape_code():
+def scrape_code(href):
     '''
     This function scrapes the code off Leetcode.
     This is neccessary because Leetcode's code text area is modified to provide highlighting and other features to the
     text.
 
+    TODO:
+    FIX STALE ELEMENT ERROR
+
     :return: string
     '''
 
     code = ""
-    lines  = problem_page_driver.find_elements_by_class_name("ace_line_group")
+    algorithms_page_driver.get(href)
+    time.sleep(TIME_DELAY)
+    algorithms_page_driver.find_element_by_class_name("code-btn").click()
+    time.sleep(TIME_DELAY)
+    #// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]
+    algorithms_page_driver.find_element_by_xpath('// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]').click()
+    time.sleep(TIME_DELAY)
+
+    lines  = algorithms_page_driver.find_elements_by_class_name("ace_line_group")
+
 
     for line in lines:
         characters = line.find_elements_by_tag_name("span")
 
         for character in characters:
-            code += character.text + " "
+            try:
+                code += character.text + " "
+            except:
+                pass
 
         code += "\n"
 
@@ -124,11 +139,12 @@ def sign_into_leetcode():
 
 def go_to_algorithms():
     """
+    TODO:
+    1. FIX STALE ELEMENT ERROR
+    2. Select All elements
+
     This function opens the algorithms and scrapes your code off each problem.
     It then stores it into a file.
-
-    TODO:
-    Copy Data from Site
 
     :return:
     """
@@ -138,31 +154,30 @@ def go_to_algorithms():
     #Opens algorithms page
     algorithms_page_driver.get( "https://leetcode.com/problemset/algorithms/")
 
-    '''
+    time.sleep(TIME_DELAY)
     #Shows only problems that are solved
-    algorithms_page_driver.find_element_by_xpath('// *[ @ id = "question-app"] / div '
-                                                 '/ div[2] / form / div[1] / div / select / option[2]').click()
-    '''
+    algorithms_page_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]/div/select/option[2]').click()
+
+    time.sleep(TIME_DELAY + 3)
+
     #Opens every problem and then copies their data into a file
     table = algorithms_page_driver.find_element_by_class_name('reactable-data')
 
+    title_href = {}
+
     for row in table.find_elements_by_tag_name("tr"):
-        href = row.find_element_by_tag_name("a").get_attribute("href")
-        problem_page_driver.get(href)
-
-        #code = problem_page_driver.find_element_by_xpath('//textarea[@class = "ace_text-input"]').text()
-#        code = problem_page_driver.find_element_by_xpath("/html/body/div[1]/div[5]/div[2]/div/div/div/div/textarea")
-
-        code = scrape_code()
-
         title = row.find_element_by_tag_name("a").text
+        href = row.find_element_by_tag_name("a").get_attribute("href")
+        title_href[title] = href
+
+    for title, href in title_href.iteritems():
+        code = scrape_code(href)
         create_file(title, code)
 
-        #time.sleep(3)
+        #To prevent overloading Leedcode's server
+        time.sleep(TIME_DELAY)
 
 if __name__ == "__main__":
-#    sign_into_leetcode()
+    sign_into_leetcode()
     go_to_algorithms()
-
     algorithms_page_driver.close()
-#    problem_page_driver.close()
