@@ -26,7 +26,16 @@ problem_page_driver = webdriver.Chrome("./chromedriver")
 # git push origin master
 '''
 
+
 def sign_into_leetcode():
+    '''
+    This function will ask the user for the preferred method to login(Currently only Facebook or into Leetcode)
+    This function will then ask them for their login information, and login them in.
+
+    Currently, there is NO error checking, so if this part crashes here, you will need to rerun the program
+
+    :return: Null
+    '''
     algorithms_page_driver.get("https://leetcode.com/accounts/logout")
 
     use_facebook = raw_input("Do you want to use facebook to login?")
@@ -43,9 +52,6 @@ def sign_into_leetcode():
         algorithms_page_driver.find_element_by_xpath('// *[ @ id = "id_login"]').send_keys(username)
         algorithms_page_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(password)
         algorithms_page_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(Keys.ENTER)
-
-
-    time.sleep(5)
 
 
 def go_to_algorithms():
