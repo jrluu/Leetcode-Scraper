@@ -55,12 +55,25 @@ def sign_into_leetcode():
 
 
 def go_to_algorithms():
+
+    #Opens algorithms page
     algorithms_page_driver.get( "https://leetcode.com/problemset/algorithms/")
+
+    #Shows only problems that are solved
+    algorithms_page_driver.find_element_by_xpath('// *[ @ id = "question-app"] / div '
+                                                 '/ div[2] / form / div[1] / div / select / option[2]').click()
+
+    #Opens every problem and then copies their data into a file
+    table = algorithms_page_driver.find_element_by_class_name('reactable-data')
+    for row in table.find_elements_by_tag_name("tr"):
+        href = row.find_element_by_tag_name("a").get_attribute("href")
+        problem_page_driver.get(href)
+        time.sleep(3)
 
 
 if __name__ == "__main__":
-    sign_into_leetcode()
+#    sign_into_leetcode()
     go_to_algorithms()
 
     algorithms_page_driver.close()
-    problem_page_driver.close()
+#    problem_page_driver.close()
