@@ -72,6 +72,28 @@ def create_file(title, code):
     file.close()
 
 
+def scrape_code():
+    '''
+    This function scrapes the code off Leetcode.
+    This is neccessary because Leetcode's code text area is modified to provide highlighting and other features to the
+    text.
+
+    :return: string
+    '''
+
+    code = ""
+    lines  = problem_page_driver.find_elements_by_class_name("ace_line_group")
+
+    for line in lines:
+        characters = line.find_elements_by_tag_name("span")
+
+        for character in characters:
+            code += character.text + " "
+
+        code += "\n"
+
+    return code
+
 
 def sign_into_leetcode():
     '''
@@ -123,12 +145,16 @@ def go_to_algorithms():
     '''
     #Opens every problem and then copies their data into a file
     table = algorithms_page_driver.find_element_by_class_name('reactable-data')
+
     for row in table.find_elements_by_tag_name("tr"):
         href = row.find_element_by_tag_name("a").get_attribute("href")
         problem_page_driver.get(href)
 
         #code = problem_page_driver.find_element_by_xpath('//textarea[@class = "ace_text-input"]').text()
-        code = problem_page_driver.find_element_by_xpath("/html/body/div[1]/div[5]/div[2]/div/div/div/div/textarea").get_attribute("value")
+#        code = problem_page_driver.find_element_by_xpath("/html/body/div[1]/div[5]/div[2]/div/div/div/div/textarea")
+
+        code = scrape_code()
+
         title = row.find_element_by_tag_name("a").text
         create_file(title, code)
 
