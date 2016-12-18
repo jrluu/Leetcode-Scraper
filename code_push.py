@@ -6,7 +6,6 @@ Author: Jonathan Luu
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoAlertPresentException
 import time
 import os
 import re
@@ -91,8 +90,8 @@ def scrape_code(href):
     time.sleep(TIME_DELAY)
     #// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]
     algorithms_page_driver.find_element_by_xpath('// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]').click()
-    time.sleep(TIME_DELAY)
-
+    time.sleep(TIME_DELAY + 2)
+    algorithms_page_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     lines  = algorithms_page_driver.find_elements_by_class_name("ace_line_group")
 
 
