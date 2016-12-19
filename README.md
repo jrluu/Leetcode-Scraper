@@ -10,10 +10,8 @@ For example, your solution to the problem FizzBizz will be stored in the file Fi
 * [Google Chrome Driver](https://sites.google.com/a/chromium.org/chromedriver/)
 
 ##Steps to install and run
-1. Download the .py file
-``git pull https://github.com/jrluu/Leetcode-Scraper.git``
-2. Install Selenium
-``pip install selenium``
+1. Download the .py file  ``git pull https://github.com/jrluu/Leetcode-Scraper.git``
+2. Install Selenium  ``pip install selenium``
 3. Download the latest Google Chrome Driver and put it in the same directory as the .py file
 4. ``python leetcode_scraper.py``
 5. Follow instructions based on the command prompt
