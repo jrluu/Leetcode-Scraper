@@ -16,7 +16,7 @@ import re
 
 TIME_DELAY = 2
 
-algorithms_page_driver = webdriver.Chrome("./chromedriver")
+code_driver = webdriver.Chrome("./chromedriver")
 
 
 '''
@@ -84,13 +84,15 @@ def scrape_code(href):
     This is neccessary because Leetcode's code text area is modified to provide highlighting and other features to the
     text.
 
+    TODO: Remove time.sleep() for the "lines" portion of the code.
+
     :return: string
     '''
 
-    wait = WebDriverWait(algorithms_page_driver,10)
+    wait = WebDriverWait(code_driver,10)
     code = ""
 
-    algorithms_page_driver.get(href)
+    code_driver.get(href)
 
     reset_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "code-btn")))
     reset_button.click()
@@ -99,15 +101,15 @@ def scrape_code(href):
                                                                       ' / div / div / div[3] / button[2]')))
     confirm_button.click()
 
-    algorithms_page_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    code_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
     time.sleep(TIME_DELAY + 2)
 
-    lines  = algorithms_page_driver.find_elements_by_class_name("ace_line_group")
+    lines  = code_driver.find_elements_by_class_name("ace_line_group")
 
     #Trying to remove time.sleep()
     #if wait.until(EC.staleness_of(lines)) :
-    #    lines = algorithms_page_driver.find_elements_by_class_name("ace_line_group")
+    #    lines = code_driver.find_elements_by_class_name("ace_line_group")
 
 
     for line in lines:
@@ -133,22 +135,22 @@ def sign_into_leetcode():
 
     :return: Null
     '''
-    algorithms_page_driver.get("https://leetcode.com/accounts/logout")
+    code_driver.get("https://leetcode.com/accounts/logout")
 
     use_facebook = raw_input("Do you want to use facebook to login?")
     username = raw_input("Enter your username: ")
     password = raw_input("Enter your password: ")
 
     if (use_facebook.lower() == "y"):
-        algorithms_page_driver.get("https://leetcode.com/accounts/facebook/login/")
-        algorithms_page_driver.find_element_by_xpath('// *[ @ id = "email"]').send_keys(username)
-        algorithms_page_driver.find_element_by_xpath('//*[@id="pass"]').send_keys(password)
-        algorithms_page_driver.find_element_by_xpath('//*[@id="pass"]').send_keys(Keys.ENTER)
+        code_driver.get("https://leetcode.com/accounts/facebook/login/")
+        code_driver.find_element_by_xpath('// *[ @ id = "email"]').send_keys(username)
+        code_driver.find_element_by_xpath('//*[@id="pass"]').send_keys(password)
+        code_driver.find_element_by_xpath('//*[@id="pass"]').send_keys(Keys.ENTER)
     else:
-        algorithms_page_driver.get("https://leetcode.com/accounts/login/")
-        algorithms_page_driver.find_element_by_xpath('// *[ @ id = "id_login"]').send_keys(username)
-        algorithms_page_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(password)
-        algorithms_page_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(Keys.ENTER)
+        code_driver.get("https://leetcode.com/accounts/login/")
+        code_driver.find_element_by_xpath('// *[ @ id = "id_login"]').send_keys(username)
+        code_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(password)
+        code_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(Keys.ENTER)
 
 
 def go_to_algorithms():
@@ -163,18 +165,23 @@ def go_to_algorithms():
     """
 
     #Using Implicitly Waits for find_elements
-    algorithms_page_driver.implicitly_wait(TIME_DELAY)
+    code_driver.implicitly_wait(TIME_DELAY)
 
     make_directory("./leet_code_solutions")
 
     #Opens algorithms page
-    algorithms_page_driver.get("https://leetcode.com/problemset/algorithms/")
+    code_driver.get("https://leetcode.com/problemset/algorithms/")
 
     #Shows only problems that are solved
-    algorithms_page_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]/div/select/option[2]').click()
+    solved_dropdown = code_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]'
+                                                        '/div/select/option[2]')
+    solved_dropdown.click()
+    all_dropdown = code_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div'
+                                                     '/table/tbody[2]/tr/td/span/select/option[4]')
+    all_dropdown.click()
 
     #Opens every problem and then copies their data into a file
-    table = algorithms_page_driver.find_element_by_class_name('reactable-data')
+    table = code_driver.find_element_by_class_name('reactable-data')
 
     title_href = {}
 
@@ -183,7 +190,7 @@ def go_to_algorithms():
         href = row.find_element_by_tag_name("a").get_attribute("href")
         title_href[title] = href
 
-    algorithms_page_driver.implicitly_wait(0)
+    code_driver.implicitly_wait(0)
 
     for title, href in title_href.iteritems():
         code = scrape_code(href)
@@ -193,4 +200,4 @@ def go_to_algorithms():
 if __name__ == "__main__":
     sign_into_leetcode()
     go_to_algorithms()
-    algorithms_page_driver.close()
+    code_driver.close()
