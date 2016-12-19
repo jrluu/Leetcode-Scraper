@@ -9,24 +9,18 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 import time
 import os
 import re
 
 TIME_DELAY = 2
 
-code_driver = webdriver.Chrome("./chromedriver")
+CODE_DRIVER = webdriver.Chrome("./chromedriver")
 
 
 '''
 TODO
-
 #Automate Beautify Process
-
-# git add .
-# git commit -m "Pushed LeetCode into Repo"
-# git push origin master
 '''
 
 
@@ -89,10 +83,10 @@ def scrape_code(href):
     :return: string
     '''
 
-    wait = WebDriverWait(code_driver,10)
+    wait = WebDriverWait(CODE_DRIVER,10)
     code = ""
 
-    code_driver.get(href)
+    CODE_DRIVER.get(href)
 
     reset_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "code-btn")))
     reset_button.click()
@@ -101,15 +95,15 @@ def scrape_code(href):
                                                                       ' / div / div / div[3] / button[2]')))
     confirm_button.click()
 
-    code_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    CODE_DRIVER.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
     time.sleep(TIME_DELAY + 2)
 
-    lines  = code_driver.find_elements_by_class_name("ace_line_group")
+    lines  = CODE_DRIVER.find_elements_by_class_name("ace_line_group")
 
     #Trying to remove time.sleep()
     #if wait.until(EC.staleness_of(lines)) :
-    #    lines = code_driver.find_elements_by_class_name("ace_line_group")
+    #    lines = CODE_DRIVER.find_elements_by_class_name("ace_line_group")
 
 
     for line in lines:
@@ -133,31 +127,31 @@ def sign_into_leetcode():
 
     Currently, there is NO error checking, so if this part crashes here, you will need to rerun the program
 
+    TODO:
+    Add all options to login to leetcode
+
     :return: Null
     '''
-    code_driver.get("https://leetcode.com/accounts/logout")
+    CODE_DRIVER.get("https://leetcode.com/accounts/logout")
 
     use_facebook = raw_input("Do you want to use facebook to login?")
     username = raw_input("Enter your username: ")
     password = raw_input("Enter your password: ")
 
     if (use_facebook.lower() == "y"):
-        code_driver.get("https://leetcode.com/accounts/facebook/login/")
-        code_driver.find_element_by_xpath('// *[ @ id = "email"]').send_keys(username)
-        code_driver.find_element_by_xpath('//*[@id="pass"]').send_keys(password)
-        code_driver.find_element_by_xpath('//*[@id="pass"]').send_keys(Keys.ENTER)
+        CODE_DRIVER.get("https://leetcode.com/accounts/facebook/login/")
+        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "email"]').send_keys(username)
+        CODE_DRIVER.find_element_by_xpath('//*[@id="pass"]').send_keys(password)
+        CODE_DRIVER.find_element_by_xpath('//*[@id="pass"]').send_keys(Keys.ENTER)
     else:
-        code_driver.get("https://leetcode.com/accounts/login/")
-        code_driver.find_element_by_xpath('// *[ @ id = "id_login"]').send_keys(username)
-        code_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(password)
-        code_driver.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(Keys.ENTER)
+        CODE_DRIVER.get("https://leetcode.com/accounts/login/")
+        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_login"]').send_keys(username)
+        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(password)
+        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(Keys.ENTER)
 
 
 def go_to_algorithms():
     """
-    TODO:
-    1. Select All elements
-
     This function opens the algorithms and scrapes your code off each problem.
     It then stores it into a file.
 
@@ -165,23 +159,23 @@ def go_to_algorithms():
     """
 
     #Using Implicitly Waits for find_elements
-    code_driver.implicitly_wait(TIME_DELAY)
+    CODE_DRIVER.implicitly_wait(TIME_DELAY)
 
     make_directory("./leet_code_solutions")
 
     #Opens algorithms page
-    code_driver.get("https://leetcode.com/problemset/algorithms/")
+    CODE_DRIVER.get("https://leetcode.com/problemset/algorithms/")
 
     #Shows only problems that are solved
-    solved_dropdown = code_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]'
+    solved_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]'
                                                         '/div/select/option[2]')
     solved_dropdown.click()
-    all_dropdown = code_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div'
+    all_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div'
                                                      '/table/tbody[2]/tr/td/span/select/option[4]')
     all_dropdown.click()
 
     #Opens every problem and then copies their data into a file
-    table = code_driver.find_element_by_class_name('reactable-data')
+    table = CODE_DRIVER.find_element_by_class_name('reactable-data')
 
     title_href = {}
 
@@ -190,7 +184,7 @@ def go_to_algorithms():
         href = row.find_element_by_tag_name("a").get_attribute("href")
         title_href[title] = href
 
-    code_driver.implicitly_wait(0)
+    CODE_DRIVER.implicitly_wait(0)
 
     for title, href in title_href.iteritems():
         code = scrape_code(href)
@@ -200,4 +194,4 @@ def go_to_algorithms():
 if __name__ == "__main__":
     sign_into_leetcode()
     go_to_algorithms()
-    code_driver.close()
+    CODE_DRIVER.close()
