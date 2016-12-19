@@ -17,8 +17,6 @@ import re
 TIME_DELAY = 2
 
 algorithms_page_driver = webdriver.Chrome("./chromedriver")
-algorithms_page_driver.implicitly_wait(TIME_DELAY)
-
 
 
 '''
@@ -86,29 +84,31 @@ def scrape_code(href):
     This is neccessary because Leetcode's code text area is modified to provide highlighting and other features to the
     text.
 
-    TODO:
-    FIX STALE ELEMENT ERROR
-
     :return: string
     '''
 
+    wait = WebDriverWait(algorithms_page_driver,10)
     code = ""
+
     algorithms_page_driver.get(href)
-    #time.sleep(TIME_DELAY)
-    algorithms_page_driver.find_element_by_class_name("code-btn").click()
-    time.sleep(TIME_DELAY)
 
+    reset_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "code-btn")))
+    reset_button.click()
 
-    #wait = WebDriverWait(algorithms_page_driver, 10)
-    confirm_button = algorithms_page_driver.find_element_by_xpath('// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]')
-    #element = wait.until(EC.visibility_of(confirm_button))
-
+    confirm_button = wait.until(EC.element_to_be_clickable((By.XPATH, '// *[ @ id = "confirmRecent"]'
+                                                                      ' / div / div / div[3] / button[2]')))
     confirm_button.click()
+
+    algorithms_page_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
     time.sleep(TIME_DELAY + 2)
-    #algorithms_page_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
     lines  = algorithms_page_driver.find_elements_by_class_name("ace_line_group")
 
-    algorithms_page_driver.implicitly_wait(0)
+    #Trying to remove time.sleep()
+    #if wait.until(EC.staleness_of(lines)) :
+    #    lines = algorithms_page_driver.find_elements_by_class_name("ace_line_group")
+
 
     for line in lines:
         characters = line.find_elements_by_tag_name("span")
@@ -121,7 +121,6 @@ def scrape_code(href):
 
         code += "\n"
 
-    algorithms_page_driver.implicitly_wait(TIME_DELAY)
     return code
 
 
@@ -155,8 +154,7 @@ def sign_into_leetcode():
 def go_to_algorithms():
     """
     TODO:
-    1. FIX STALE ELEMENT ERROR
-    2. Select All elements
+    1. Select All elements
 
     This function opens the algorithms and scrapes your code off each problem.
     It then stores it into a file.
@@ -164,16 +162,16 @@ def go_to_algorithms():
     :return:
     """
 
+    #Using Implicitly Waits for find_elements
+    algorithms_page_driver.implicitly_wait(TIME_DELAY)
+
     make_directory("./leet_code_solutions")
 
     #Opens algorithms page
     algorithms_page_driver.get("https://leetcode.com/problemset/algorithms/")
 
-    #time.sleep(TIME_DELAY)
     #Shows only problems that are solved
     algorithms_page_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]/div/select/option[2]').click()
-
-    #time.sleep(TIME_DELAY + 3)
 
     #Opens every problem and then copies their data into a file
     table = algorithms_page_driver.find_element_by_class_name('reactable-data')
@@ -185,12 +183,12 @@ def go_to_algorithms():
         href = row.find_element_by_tag_name("a").get_attribute("href")
         title_href[title] = href
 
+    algorithms_page_driver.implicitly_wait(0)
+
     for title, href in title_href.iteritems():
         code = scrape_code(href)
         create_file(title, code)
 
-        #To prevent overloading Leedcode's server
-        #time.sleep(TIME_DELAY)
 
 if __name__ == "__main__":
     sign_into_leetcode()
