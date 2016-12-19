@@ -19,8 +19,17 @@ For example, your solution to the problem FizzBizz will be stored in the file Fi
 5. Follow instructions based on the command prompt
 (This will ask you whether or not you want to login with Facebook, and then it will ask you for your username and password)
 
+
 ##Where to find your files
 Your files will be located in the folder called leet\_code\_solutions
+
+
+##Ways to contribute:
+1. Currently, this program does not take in spaces or indents(Leetcode's code area is modified, so I am unable to parse it)
+2. Add a GUI
+3. Add a functionality to select the default extension(currently only .cpp)
+4. Add more ways to login(Currently there are only two options to login, either through Facebook or Leetcode accounts)
+
 
 ##For more information on installing
 1. [Python 2.7 Beginners guide] (https://wiki.python.org/moin/BeginnersGuide)
@@ -28,7 +37,7 @@ Your files will be located in the folder called leet\_code\_solutions
 3. [Google Chrome Driver Download](https://sites.google.com/a/chromium.org/chromedriver/)
 
 ##Contact:
-Please send all inquires to jrluu@yahoo.com
+If you have any inquires or comments, please feel free them to send them to jrluu@yahoo.com with the subject line: [LeetCode_Scraper] title.
 
 ##Authors:
 Jonathan Luu
