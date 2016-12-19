@@ -6,12 +6,20 @@ Author: Jonathan Luu
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 import time
 import os
 import re
 
 TIME_DELAY = 2
+
 algorithms_page_driver = webdriver.Chrome("./chromedriver")
+algorithms_page_driver.implicitly_wait(TIME_DELAY)
+
+
 
 '''
 TODO
@@ -22,6 +30,7 @@ TODO
 # git commit -m "Pushed LeetCode into Repo"
 # git push origin master
 '''
+
 
 def urlify(s):
     '''
@@ -85,15 +94,21 @@ def scrape_code(href):
 
     code = ""
     algorithms_page_driver.get(href)
-    time.sleep(TIME_DELAY)
+    #time.sleep(TIME_DELAY)
     algorithms_page_driver.find_element_by_class_name("code-btn").click()
     time.sleep(TIME_DELAY)
-    #// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]
-    algorithms_page_driver.find_element_by_xpath('// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]').click()
+
+
+    #wait = WebDriverWait(algorithms_page_driver, 10)
+    confirm_button = algorithms_page_driver.find_element_by_xpath('// *[ @ id = "confirmRecent"] / div / div / div[3] / button[2]')
+    #element = wait.until(EC.visibility_of(confirm_button))
+
+    confirm_button.click()
     time.sleep(TIME_DELAY + 2)
-    algorithms_page_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    #algorithms_page_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     lines  = algorithms_page_driver.find_elements_by_class_name("ace_line_group")
 
+    algorithms_page_driver.implicitly_wait(0)
 
     for line in lines:
         characters = line.find_elements_by_tag_name("span")
@@ -106,6 +121,7 @@ def scrape_code(href):
 
         code += "\n"
 
+    algorithms_page_driver.implicitly_wait(TIME_DELAY)
     return code
 
 
@@ -151,13 +167,13 @@ def go_to_algorithms():
     make_directory("./leet_code_solutions")
 
     #Opens algorithms page
-    algorithms_page_driver.get( "https://leetcode.com/problemset/algorithms/")
+    algorithms_page_driver.get("https://leetcode.com/problemset/algorithms/")
 
-    time.sleep(TIME_DELAY)
+    #time.sleep(TIME_DELAY)
     #Shows only problems that are solved
     algorithms_page_driver.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]/div/select/option[2]').click()
 
-    time.sleep(TIME_DELAY + 3)
+    #time.sleep(TIME_DELAY + 3)
 
     #Opens every problem and then copies their data into a file
     table = algorithms_page_driver.find_element_by_class_name('reactable-data')
@@ -174,7 +190,7 @@ def go_to_algorithms():
         create_file(title, code)
 
         #To prevent overloading Leedcode's server
-        time.sleep(TIME_DELAY)
+        #time.sleep(TIME_DELAY)
 
 if __name__ == "__main__":
     sign_into_leetcode()
