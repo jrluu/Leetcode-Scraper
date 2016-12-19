@@ -12,9 +12,9 @@ For example, your solution to the problem FizzBizz will be stored in the file Fi
 ##Steps to install and run
 1. Download the .py file
 ``git pull https://github.com/jrluu/Leetcode-Scraper.git``
-2. Install Selenium
+2. Install [Selenium]((http://selenium-python.readthedocs.io/installation.html)
 ``pip install selenium``
-3. Download the latest Google Chrome Driver and put it in the same directory as the .py file
+3. Download the latest [Google Chrome Driver](https://sites.google.com/a/chromium.org/chromedriver/) and put it in the same directory as the .py file
 4. ``python leetcode_scraper.py``
 5. Follow instructions based on the command prompt
 (This will ask you whether or not you want to login with Facebook, and then it will ask you for your username and password)
