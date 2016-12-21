@@ -132,23 +132,50 @@ def sign_into_leetcode():
 
     :return: Null
     '''
+    CODE_DRIVER.implicitly_wait(TIME_DELAY)
+
     CODE_DRIVER.get("https://leetcode.com/accounts/logout")
 
-    use_facebook = raw_input("Do you want to use facebook to login?")
-    username = raw_input("Enter your username: ")
-    password = raw_input("Enter your password: ")
+    valid_choice = False
 
-    if (use_facebook.lower() == "y"):
-        CODE_DRIVER.get("https://leetcode.com/accounts/facebook/login/")
-        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "email"]').send_keys(username)
-        CODE_DRIVER.find_element_by_xpath('//*[@id="pass"]').send_keys(password)
-        CODE_DRIVER.find_element_by_xpath('//*[@id="pass"]').send_keys(Keys.ENTER)
-    else:
-        CODE_DRIVER.get("https://leetcode.com/accounts/login/")
-        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_login"]').send_keys(username)
-        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(password)
-        CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(Keys.ENTER)
+    while ( not valid_choice):
+        valid_choice = True
 
+        option = raw_input("Type in method to login \n 1. Leetcode \n 2. Facebook \n 3. Google \n 4. Linkedin \n 5. Github \n")
+        username = raw_input("Enter your username: ")
+        password = raw_input("Enter your password: ")
+
+        if option == "1":
+            CODE_DRIVER.get("https://leetcode.com/accounts/login/")
+            CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_login"]').send_keys(username)
+            CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(password)
+            CODE_DRIVER.find_element_by_xpath('// *[ @ id = "id_password"]').send_keys(Keys.ENTER)
+        elif option == '2':
+            CODE_DRIVER.get("https://leetcode.com/accounts/facebook/login/")
+            CODE_DRIVER.find_element_by_xpath('// *[ @ id = "email"]').send_keys(username)
+            CODE_DRIVER.find_element_by_xpath('//*[@id="pass"]').send_keys(password)
+            CODE_DRIVER.find_element_by_xpath('//*[@id="pass"]').send_keys(Keys.ENTER)
+        elif option == '3':
+            CODE_DRIVER.get("https://leetcode.com/accounts/google/login/")
+            CODE_DRIVER.find_element_by_xpath('// *[ @ id = "Email"]').send_keys(username)
+            CODE_DRIVER.find_element_by_xpath('// *[ @ id = "Email"]').send_keys(Keys.ENTER)
+            CODE_DRIVER.find_element_by_xpath('//*[@id="Passwd"]').send_keys(password)
+            CODE_DRIVER.find_element_by_xpath('//*[@id="Passwd"]').send_keys(Keys.ENTER)
+        elif option == '4':
+            CODE_DRIVER.get("https://leetcode.com/accounts/linkedin/login/")
+            CODE_DRIVER.find_element_by_name('session_key').send_keys(username)
+            CODE_DRIVER.find_element_by_name('session_password').send_keys(password)
+            CODE_DRIVER.find_element_by_name('session_password').send_keys(Keys.ENTER)
+        elif option == '5':
+            CODE_DRIVER.get("https://leetcode.com/accounts/github/login/")
+            CODE_DRIVER.find_element_by_xpath('// *[ @ id = "login_field"]').send_keys(username)
+            CODE_DRIVER.find_element_by_xpath('//*[@id="password"]').send_keys(password)
+            CODE_DRIVER.find_element_by_xpath('//*[@id="password"]').send_keys(Keys.ENTER)
+        else:
+            valid_choice = False
+            print "Invalid Choice. Please choose a number from 1 to 5 \n"
+
+    CODE_DRIVER.implicitly_wait(0)
 
 def go_to_algorithms():
     """
