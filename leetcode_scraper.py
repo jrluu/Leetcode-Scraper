@@ -66,7 +66,26 @@ def create_file(title, code):
     '''
 
     title = urlify(title)
-    extension = ".cpp"
+
+    language = CODE_DRIVER.find_element_by_class_name("select2-selection__rendered").text
+    if language == "C++":
+        extension = ".cpp"
+    elif language == "Java":
+        extension = ".java"
+    elif language == "Python":
+        extension = ".py"
+    elif language == "C":
+        extension = ".c"
+    elif language == "C#":
+        extension = ".cs"
+    elif language == "JavaScript":
+        extension = ".js"
+    elif language == "Ruby":
+        extension = ".rb"
+    elif language == "Swift":
+        extension = ".swift"
+    else:
+        extension = ".go"
 
     title = "./leet_code_solutions/" + title + extension
 
