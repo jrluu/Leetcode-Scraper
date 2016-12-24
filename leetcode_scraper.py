@@ -12,11 +12,14 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
 import re
+import Tkinter as tk
 
 TIME_DELAY = 2
 
 CODE_DRIVER = webdriver.Chrome("./chromedriver")
 
+root = tk.Tk()
+root.withdraw()
 
 '''
 TODO
@@ -99,6 +102,12 @@ def scrape_code(href):
 
     time.sleep(TIME_DELAY + 2)
 
+    code_elem = CODE_DRIVER.find_element_by_class_name("ace_text-input")
+    code_elem.send_keys(Keys.LEFT_CONTROL, 'a')
+    code_elem.send_keys(Keys.LEFT_CONTROL, 'c')
+
+    code = root.clipboard_get()
+    '''
     lines  = CODE_DRIVER.find_elements_by_class_name("ace_line_group")
 
     #Trying to remove time.sleep()
@@ -116,6 +125,7 @@ def scrape_code(href):
                 pass
 
         code += "\n"
+    '''
 
     return code
 
@@ -193,6 +203,7 @@ def go_to_algorithms():
     #Opens algorithms page
     CODE_DRIVER.get("https://leetcode.com/problemset/algorithms/")
 
+    '''
     #Shows only problems that are solved
     solved_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]'
                                                         '/div/select/option[2]')
@@ -200,7 +211,7 @@ def go_to_algorithms():
     all_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div'
                                                      '/table/tbody[2]/tr/td/span/select/option[4]')
     all_dropdown.click()
-
+    '''
     #Opens every problem and then copies their data into a file
     table = CODE_DRIVER.find_element_by_class_name('reactable-data')
 
