@@ -154,11 +154,6 @@ def sign_into_leetcode():
     This function will ask the user for the preferred method to login(Currently only Facebook or into Leetcode)
     This function will then ask them for their login information, and login them in.
 
-    Currently, there is NO error checking, so if this part crashes here, you will need to rerun the program
-
-    TODO:
-    Add all options to login to leetcode
-
     :return: Null
     '''
     CODE_DRIVER.implicitly_wait(TIME_DELAY)
@@ -222,7 +217,6 @@ def go_to_algorithms():
     #Opens algorithms page
     CODE_DRIVER.get("https://leetcode.com/problemset/algorithms/")
 
-    '''
     #Shows only problems that are solved
     solved_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]'
                                                         '/div/select/option[2]')
@@ -230,7 +224,7 @@ def go_to_algorithms():
     all_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div'
                                                      '/table/tbody[2]/tr/td/span/select/option[4]')
     all_dropdown.click()
-    '''
+
     #Opens every problem and then copies their data into a file
     table = CODE_DRIVER.find_element_by_class_name('reactable-data')
 
