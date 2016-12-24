@@ -1,7 +1,10 @@
 '''
 Author: Jonathan Luu
 
+LeetCode Scraper is a python program that logins into your LeetCode account, and copies your code for your solved 
+problems into its corresponding file.
 
+For example, your solution to the problem FizzBizz will be stored in the file Fizzbizz.extension
 '''
 
 from selenium import webdriver
@@ -18,14 +21,8 @@ TIME_DELAY = 2
 
 CODE_DRIVER = webdriver.Chrome("./chromedriver")
 
-root = tk.Tk()
-root.withdraw()
-
-'''
-TODO
-#Automate Beautify Process
-'''
-
+ROOT = tk.Tk()
+ROOT.withdraw()
 
 def urlify(s):
     '''
@@ -125,7 +122,7 @@ def scrape_code(href):
     code_elem.send_keys(Keys.LEFT_CONTROL, 'a')
     code_elem.send_keys(Keys.LEFT_CONTROL, 'c')
 
-    code = root.clipboard_get()
+    code = ROOT.clipboard_get()
     '''
     lines  = CODE_DRIVER.find_elements_by_class_name("ace_line_group")
 
