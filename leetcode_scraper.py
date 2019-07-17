@@ -215,11 +215,11 @@ def go_to_algorithms():
     CODE_DRIVER.get("https://leetcode.com/problemset/algorithms/")
 
     #Shows only problems that are solved
-    solved_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/form/div[1]'
-                                                        '/div/select/option[2]')
+    solved_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div[2]/div'
+                                                        '/div[2]/div[4]')
     solved_dropdown.click()
-    all_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div'
-                                                     '/table/tbody[2]/tr/td/span/select/option[4]')
+    all_dropdown = CODE_DRIVER.find_element_by_xpath('//*[@id="question-app"]/div/div[2]/div[2]/div/div[2]'
+                                                     '/div[4]/div/div/div/div[2]')
     all_dropdown.click()
 
     #Opens every problem and then copies their data into a file
